@@ -1,0 +1,14 @@
+zookeeperUrls: localhost:2181
+kafkaBrokersList: localhost:9092
+commonZkRoot: /
+refreshSeconds: 30
+jaasConf: /root/jaas.conf
+kerberos: false
+
+
+server:
+  applicationConnectors:
+   - type: http
+     port: 9090
+     maxRequestHeaderSize: 32KiB
+     maxResponseHeaderSize: 32KiB
