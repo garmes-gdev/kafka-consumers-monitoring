@@ -1,29 +1,39 @@
 package com.gdev.resources;
 
 import com.gdev.api.TopicListResponse;
+import com.gdev.api.TopicOffsetsResponse;
 import com.gdev.api.TopicResponse;
 import com.gdev.client.Zookeeper;
-import com.codahale.metrics.annotation.Timed;
+import com.gdev.core.cache.TopicOffsetsCache;
+import com.gdev.core.cache.model.TopicPartitionOffset;
 import com.gdev.db.zookeeper.Topic;
 import com.gdev.db.zookeeper.ZkDataConverter;
 import com.gdev.utils.ZkUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import org.ehcache.Cache;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Path("/")
 public class TopicResource {
 
-
-    String zookeeperUrl;
-    ZkUtils zookeeper;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopicResource.class);
+    private String zookeeperUrl;
+    private ZkUtils zookeeper;
+    private Cache topicsOffsets;
     public TopicResource(String zookeeperUrl) {
         this.zookeeperUrl = zookeeperUrl;
         this.zookeeper = Zookeeper.getZkUtils(this.zookeeperUrl);
+        this.topicsOffsets = TopicOffsetsCache.getInstance();
     }
 
 
@@ -62,10 +72,21 @@ public class TopicResource {
             topicResponse.setError(1);
         }
 
+        return topicResponse;
+    }
 
+    @Path("/topics/offsets")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public TopicOffsetsResponse getTopicOffsetsResponse( @PathParam("topic") String topicName) {
 
-
-
+        List<TopicPartitionOffset> offsets = new ArrayList<TopicPartitionOffset>();
+        Iterator it = topicsOffsets.iterator();
+        while(it.hasNext()) {
+            Cache.Entry<String, Long> lagCache = (Cache.Entry<String, Long>)it.next();
+            offsets.add(new TopicPartitionOffset(lagCache.getKey().split("=")[0],lagCache.getKey().split("=")[1], lagCache.getValue() ));
+        }
+        TopicOffsetsResponse topicResponse = new TopicOffsetsResponse(offsets);
 
         return topicResponse;
     }

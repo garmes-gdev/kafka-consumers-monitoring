@@ -1,40 +1,33 @@
 package com.gdev.core.cache;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.spi.CachingProvider;
+
+import com.gdev.core.cache.model.DataPoint;
+import org.ehcache.Cache;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.MemoryUnit;
+import org.ehcache.expiry.Duration;
+import org.ehcache.expiry.Expirations;
+
+import java.util.concurrent.TimeUnit;
 
 public class ConsumersOffsetsCache {
 
-    private static javax.cache.Cache<String, DataPoint> cache ;
-    private static CacheManager cacheManager;
-    private static ConsumersOffsetsCache INSTANCE = null;
+    private static Cache cache = null;
 
-    private ConsumersOffsetsCache(){
-        // Construct a simple local cache manager with default configuration
-        CachingProvider jcacheProvider = Caching.getCachingProvider();
-        this.cacheManager = jcacheProvider.getCacheManager();
-
-        MutableConfiguration<String, DataPoint> configuration = new MutableConfiguration<>();
-        configuration.setTypes(String.class, DataPoint.class);
-
-        // create a cache using the supplied configuration
-        this.cache = cacheManager.createCache("consumer-offsets-cache", configuration);
-    }
-
-    public static synchronized Cache getInstance() {
-        if (INSTANCE == null)
-        {   INSTANCE = new ConsumersOffsetsCache();
+    public static synchronized org.ehcache.Cache getInstance() {
+        if (cache == null)
+        {
+            cache =  EhCacheManager.getInstance().createCache("consumerOffsetsCache",  CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, DataPoint.class,
+                    ResourcePoolsBuilder.heap(10).offheap(200, MemoryUnit.MB)
+                    ).withExpiry(Expirations.timeToLiveExpiration(Duration.of(12, TimeUnit.HOURS)))
+            );
         }
-        return INSTANCE.cache;
+        return cache;
     }
 
     public static synchronized void close() {
-        if (INSTANCE != null) {
-            INSTANCE.cacheManager.close();
-        }
+        EhCacheManager.close();
     }
 
 

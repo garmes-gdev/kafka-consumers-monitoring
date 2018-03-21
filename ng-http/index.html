@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" href="/icon/kafka.png" sizes="16x16 32x32" type="image/png" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+    <title>Kafka Monitoring Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
+    <link rel="stylesheet" href="/lib/css/bootstrap.min.css" />
+    <!-- build:css lib/css/styles.css -->
+    <link rel="stylesheet" href="/lib/css/font-awesome.min.css" type='text/css' />
+    <link rel="stylesheet" href="/lib/css/animations.css" type='text/css'/>
+
+    <link rel="stylesheet" href="/css/kafka.css" type='text/css'/>
+    <!-- endbuild -->
+
+
+</head>
+<body data-ng-app="app" class="monitoring-center">
+
+
+
+<div class="col-sm-2 menu">
+
+    <div class="cluster-id">
+        <label class=""> CLUSTER ID : {{ clusterId }}</label>
+    </div>
+
+    <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-collapse collapse sidebar-navbar-collapse  no-padding">
+            <ul class="nav navbar-nav">
+                <li active-link="current" href="#/" class="">
+                    <a href="#/"  role="button">STATUS</a>
+                </li>
+                <li active-link="current" href="#/brokers">
+                    <a href="#/brokers" class=" " role="button">BROKERS</a>
+                </li>
+                <li active-link="current" href="#/topics">
+                    <a href="#/topics" class=" " role="button">TOPICS</a>
+                    <i class="fa fa-caret-down" ng-click="topicsSubLinks = ! topicsSubLinks"></i>
+                </li>
+                <li active-link="current" href="#/topics/offsets" ng-class="{ 'hidden': ! topicsSubLinks }" >
+                    <a href="#/topics/offsets" class=" " role="button">TOPICS | OFFSETS</a>
+                </li>
+                <li active-link="current" href="#/groups" >
+                    <a href="#/groups" class=" " role="button">GROUPS</a>
+                    <i class="fa fa-caret-down" ng-click="groupsSubLinks = ! groupsSubLinks"></i>
+                </li>
+                <li active-link="current" href="#/groups/acls" ng-class="{ 'hidden': ! groupsSubLinks }" >
+                    <a href="#/groups/acls" class=" " role="button">GROUPS | ACLS</a>
+                </li>
+                <li active-link="current" href="#/groups/lag">
+                    <a href="#/groups/lag" class=" " role="button">GROUPS LAG</a>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+
+<div ui-view="main" class="col-sm-10 main"></div>
+
+
+<!-- build:lib lib.min.js -->
+<!-- LIB -->
+<script src="/lib/js/angular.min.js"></script>
+<script src="/lib/js/angular-animate.min.js"></script>
+<script src="/lib/js/angular-cookies.min.js"></script>
+<script src="/lib/js/angular-storage.min.js"></script>
+<!--   <script src="lib/js/angular-route.min.js"></script>  -->
+<script src="/lib/js/angular-ui-router.min.js"></script>
+<script src="/lib/js/angular-touch.min.js"></script>
+<script src="/lib/js/moment.min.js"></script>
+<script src="/lib/js/angular-moment.min.js"></script>
+<script src="/lib/js/angular-truncate.js"></script>
+<script src="/lib/js/angular-preload-image.min.js"></script>
+<script src="/lib/js/angular-resource.js"></script>
+<!-- / -->
+<!-- endbuild -->
+
+<!-- build:js app.min.js -->
+<!-- MODULES -->
+<script src="/modules/app/app.js"></script>
+
+
+<script src="/modules/kafka/kafka_cluster.js"></script>
+
+<!-- / -->
+<!-- inject:js -->
+<!-- endinject -->
+<!-- endbuild -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+</body>
+</html>

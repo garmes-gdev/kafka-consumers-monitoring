@@ -1,7 +1,7 @@
 package com.gdev.core.kafka;
 
 import com.gdev.core.cache.ConsumersOffsetsCache;
-import com.gdev.core.cache.DataPoint;
+import com.gdev.core.cache.model.DataPoint;
 import com.gdev.core.cache.TopicOffsetsCache;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -10,10 +10,11 @@ import org.apache.kafka.common.protocol.types.ArrayOf;
 import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Struct;
+import org.ehcache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Properties;
@@ -151,7 +152,7 @@ public class KafkaNewConsumerOffsetThread implements Runnable {
                     String topic = struct.getString(OFFSET_KEY_TOPIC_FIELD);
                     int partition = struct.getInt(OFFSET_KEY_PARTITION_FIELD);
 
-                    cache.put(group+"#"+topic+"-"+partition, readOffsetMessageValue(ByteBuffer.wrap(consumerRecord.value())) );
+                    cache.put(group+"#"+topic+"="+partition, readOffsetMessageValue(ByteBuffer.wrap(consumerRecord.value())) );
                 }else if (version == CURRENT_GROUP_KEY_SCHEMA_VERSION) {
                     // version 2 refers to offset
                     Struct struct = (Struct) GROUP_METADATA_KEY_SCHEMA.read(key);

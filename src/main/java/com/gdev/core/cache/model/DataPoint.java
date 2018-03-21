@@ -1,4 +1,4 @@
-package com.gdev.core.cache;
+package com.gdev.core.cache.model;
 
 import java.io.Serializable;
 

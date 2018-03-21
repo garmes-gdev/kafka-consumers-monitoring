@@ -19,6 +19,9 @@ public class ZkUtils {
     private String BrokerTopicsPath = "/brokers/topics";
     private String TopicConfigPath = "/config/topics";
     private String TopicAclsPath = AclsPath+"/Topic";
+
+    private String GroupAclsPath = AclsPath+"/Group";
+
     private String TopicConfigChangesPath = "/config/changes";
     private String ControllerPath = "/controller";
     private String ControllerEpochPath = "/controller_epoch";
@@ -75,6 +78,14 @@ public class ZkUtils {
 
     public String getTopicAclsPath(String topic) {
         return TopicAclsPath +"/"+topic;
+    }
+
+    public String getGroupsAclsPath() {
+        return GroupAclsPath;
+    }
+
+    public String getGroupAclsPath(String group) {
+        return GroupAclsPath +"/"+group;
     }
 
     public String getTopicConfigChangesPath() {

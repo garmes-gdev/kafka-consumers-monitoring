@@ -1,7 +1,7 @@
 package com.gdev.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gdev.core.cache.LagDataPoint;
+import com.gdev.core.cache.model.LagDataPoint;
 
 import java.util.List;
 

@@ -1,0 +1,17 @@
+<div class="col-sm-12 ">
+
+    <div class="col-sm-12" style="margin-bottom: 20px">
+        <label> Number : {{ res.number }}</label><input type="text" ng-model="searchText" class="search" placeholder="Search..">
+    </div>
+    <br>
+    <div class="col-sm-4" >
+        <ul class="list-group">
+            <li ng-repeat="topic in res.topics | filter:searchText " class="list-group-item">
+                <a ng-href="#/topic/{{ topic }}" class="topic_link"> {{ topic }} </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <h5>{{ message }}</h5>
+</div>

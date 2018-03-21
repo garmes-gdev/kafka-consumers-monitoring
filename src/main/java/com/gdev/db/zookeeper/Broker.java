@@ -29,6 +29,9 @@ public class Broker {
     @JsonProperty("version")
     int version;
 
+    @JsonProperty("rack")
+    String rack;
+
     public List<String> getEndpoints() {
         return endpoints;
     }
@@ -83,5 +86,13 @@ public class Broker {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getRack() {
+        return rack;
+    }
+
+    public void setRack(String rack) {
+        this.rack = rack;
     }
 }

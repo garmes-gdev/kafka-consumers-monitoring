@@ -1,0 +1,35 @@
+<div class="col-sm-12">
+    <table class="table " style=" width: 50%;">
+    <tr>
+        <td>Configuration</td>
+        <td class="table_topic_info">
+
+            <a ng-repeat="(key, partition) in res.data.conf.config"> {{ key }} : {{ partition }} </a>
+
+        </td>
+    </tr>
+    <tr>
+        <td>Acl</td>
+        <td class="table_topic_info">
+            <p ng-repeat="ac in res.data.acls "> {{ ac | json }} </p>
+        </td>
+    </tr>
+    <tr>
+        <td>Replication Factor</td>
+        <td class="table_topic_info">{{ res.data.replicationFactor }}</td>
+    </tr>
+    <tr>
+        <td>Partitions</td>
+        <td class="table_topic_info">{{ res.data.numberOfPartitions }}</td>
+    </tr>
+    <tr>
+        <td>Partitions</td>
+        <td class="table_topic_info">
+            <p ng-repeat="(key, partition) in res.data.metadata.partitions"> {{ key }} : {{ partition }} </p>
+        </td>
+    </tr>
+</table>
+
+
+    <h5>{{ message }}</h5>
+</div>

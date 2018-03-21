@@ -1,0 +1,29 @@
+<div class="col-sm-12 ">
+    <dev ng-if="res.error == 0">
+        <table class="table cluster-info">
+            <thead>
+            <tr>
+                <th>Cluster Id</th>
+                <th>Brokers</th>
+                <th>Topics</th>
+            </tr>
+            </thead>
+            <tr>
+                <td><div>{{ res.data.clusterId.id }}</div></td>
+                <td><div class="round">{{ res.data.numberOfBrokers }}</div></td>
+                <td><div class="round">{{ res.data.numberOfTopics }}</div></td>
+            </tr>
+        </table>
+    </dev>
+    <div ng-if="res.error != 0">
+        <h1>{{ res.message }}</h1>
+    </div>
+</div>
+
+
+
+
+
+
+
+

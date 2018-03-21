@@ -1,6 +1,6 @@
 package com.gdev.utils;
 
-import com.gdev.core.cache.LagDataPoint;
+import com.gdev.core.cache.model.LagDataPoint;
 
 import java.util.List;
 

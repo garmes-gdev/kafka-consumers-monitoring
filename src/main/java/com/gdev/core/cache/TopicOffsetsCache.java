@@ -1,46 +1,37 @@
 package com.gdev.core.cache;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.spi.CachingProvider;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.MemoryUnit;
+import org.ehcache.expiry.Duration;
+import org.ehcache.expiry.Expirations;
+
+import org.ehcache.Cache;
+import java.util.concurrent.TimeUnit;
 
 public class TopicOffsetsCache {
 
-    private static Cache<String, Long> cache ;
-    private static CacheManager cacheManager;
-    private static TopicOffsetsCache INSTANCE = null;
+    private static Cache cache = null;
 
-    private TopicOffsetsCache(){
-        // Construct a simple local cache manager with default configuration
-        CachingProvider jcacheProvider = Caching.getCachingProvider();
-        this.cacheManager = jcacheProvider.getCacheManager();
-
-        MutableConfiguration<String, Long> configuration = new MutableConfiguration<>();
-        configuration.setTypes(String.class, Long.class);
-
-        // create a cache using the supplied configuration
-        this.cache = cacheManager.createCache("topic-offsets-cache", configuration);
-    }
-
-    public static synchronized Cache getInstance() {
-        if (INSTANCE == null)
-        {   INSTANCE = new TopicOffsetsCache();
+    public static synchronized org.ehcache.Cache getInstance() {
+        if (cache == null)
+        {
+            cache =  EhCacheManager.getInstance().createCache("TopicOffsetCache",  CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Long.class,
+                    ResourcePoolsBuilder.heap(10).offheap(200, MemoryUnit.MB)
+                    ).withExpiry(Expirations.timeToLiveExpiration(Duration.of(1, TimeUnit.HOURS)))
+            );
         }
-        return INSTANCE.cache;
+        return cache;
     }
 
     public static synchronized void close() {
-        if (INSTANCE != null) {
-            INSTANCE.cacheManager.close();
-        }
+        EhCacheManager.close();
     }
 
 
     public static void main(String[] args) {
 
-        Cache cache = ConsumersOffsetsCache.getInstance();
+        Cache cache = TopicOffsetsCache.getInstance();
         // Store a value
         cache.put("key", 1);
         // Retrieve the value and print it out

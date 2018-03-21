@@ -1,0 +1,48 @@
+<div class="col-sm-12 ">
+    <div class="col-sm-12">
+        <div ng-repeat="rack_name  in indexed_racks"  class="col-sm-12">
+
+            <b>Topology : {{rack_name}}</b>
+            <div class="rack">
+                <div ng-repeat="broker in brokers | filter:{rack: rack_name}" class=" col-sm-4" >
+                    <div class="broker">
+                        <span>{{broker.id}} </span> <span> {{broker.host}}</span>
+                        <i class="fa fa-info-circle broker_info" ng-click="showDetails = ! showDetails"></i>
+                        <div class="procedure-details" ng-class="{ 'hidden': ! showDetails }">
+                            <table class="table">
+                                <tr>
+                                    <td>End points</td>
+                                    <td>
+                                        <i ng-repeat="endpoint in broker.endpoints "> {{ endpoint }} </i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>timestamp</td>
+                                    <td>{{ broker.timestamp }} | {{broker.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>jmx port</td>
+                                    <td>{{ broker.jmx_port }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>version</td>
+                                    <td>{{ broker.version }}</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <h5>{{ message }}</h5>
+</div>

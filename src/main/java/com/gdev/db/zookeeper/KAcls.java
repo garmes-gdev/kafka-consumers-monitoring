@@ -3,7 +3,7 @@ package com.gdev.db.zookeeper;
 import java.util.List;
 import java.util.Map;
 
-public class TopicAcls {
+public class KAcls {
 
     //{"version":1,"acls":[AclResource]}
 
@@ -12,7 +12,7 @@ public class TopicAcls {
 
     List<AclResource> acls;
 
-    public TopicAcls() {
+    public KAcls() {
     }
 
     public int getVersion() {

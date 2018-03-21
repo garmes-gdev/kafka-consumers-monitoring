@@ -21,8 +21,8 @@ public class TopicMetadata {
         this.version = version;
     }
 
-    Map<String,List<Integer>> partitions;
-    int version;
+    private Map<String,List<Integer>> partitions;
+    private int version;
 
     public Map<String, List<Integer>> getPartitions() {
         return partitions;

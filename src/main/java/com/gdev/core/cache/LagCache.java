@@ -1,46 +1,39 @@
 package com.gdev.core.cache;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.spi.CachingProvider;
+
+import com.gdev.core.cache.model.LagDataPoint;
+import org.ehcache.Cache;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.MemoryUnit;
+import org.ehcache.expiry.Duration;
+import org.ehcache.expiry.Expirations;
+
+import java.util.concurrent.TimeUnit;
 
 public class LagCache {
 
-    private static Cache<String, LagDataPoint> cache ;
-    private static CacheManager cacheManager;
-    private static LagCache INSTANCE = null;
-
-    private LagCache(){
-        // Construct a simple local cache manager with default configuration
-        CachingProvider jcacheProvider = Caching.getCachingProvider();
-        this.cacheManager = jcacheProvider.getCacheManager();
-
-        MutableConfiguration<String, LagDataPoint> configuration = new MutableConfiguration<>();
-        configuration.setTypes(String.class, LagDataPoint.class);
-
-        // create a cache using the supplied configuration
-        this.cache = cacheManager.createCache("lac-cache", configuration);
-    }
+    private static Cache cache = null;
 
     public static synchronized Cache getInstance() {
-        if (INSTANCE == null)
-        {   INSTANCE = new LagCache();
+        if (cache == null)
+        {
+            cache =  EhCacheManager.getInstance().createCache("lagCache",  CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, LagDataPoint.class,
+                    ResourcePoolsBuilder.heap(10).offheap(500, MemoryUnit.MB)
+                    ).withExpiry(Expirations.timeToLiveExpiration(Duration.of(12, TimeUnit.HOURS)))
+            );
         }
-        return INSTANCE.cache;
+        return cache;
     }
 
     public static synchronized void close() {
-        if (INSTANCE != null) {
-            INSTANCE.cacheManager.close();
-        }
+        EhCacheManager.close();
     }
 
 
     public static void main(String[] args) {
 
-        Cache cache = ConsumersOffsetsCache.getInstance();
+        Cache cache = LagCache.getInstance();
         // Store a value
         cache.put("key", 1);
         // Retrieve the value and print it out

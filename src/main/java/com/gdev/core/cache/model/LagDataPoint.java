@@ -1,6 +1,5 @@
-package com.gdev.core.cache;
+package com.gdev.core.cache.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -49,8 +49,8 @@ public class ZkDataConverter {
         return mapper.writeValueAsString(topicConf);
     }
 
-    public static TopicAcls getTopicAcls(String data) throws IOException {
-        return mapper.readValue(data, TopicAcls.class);
+    public static KAcls getTopicAcls(String data) throws IOException {
+        return mapper.readValue(data, KAcls.class);
     }
 
 

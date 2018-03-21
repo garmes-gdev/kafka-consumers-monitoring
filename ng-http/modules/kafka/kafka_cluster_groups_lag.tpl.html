@@ -1,0 +1,36 @@
+<div class="col-sm-12 ">
+    <div class="slidecontainer">
+        <input type="range" min="0" max="1000"  class="slider" id="myRange" ng-model="lag">
+        <p>Value: <span>{{lag}}</span></p>
+    </div>
+
+    <div class="col-sm-12" >
+        <label> Number : {{ res.number }}</label><input type="text" ng-model="group_name_filter" class="search" placeholder="Search.." >
+    </div>
+    <br>
+    <div class="col-sm-12" >
+
+        <table class="table">
+            <thead>
+            <tr >
+                <td>Group</td>
+                <td>Topic</td>
+                <td>Partition</td>
+                <td>Lag</td>
+                <td>Time diff</td>
+
+            </tr>
+            </thead>
+            <tr ng-repeat="group_lag in res.groups | filter:group_name_filter |  filter: greaterThan('lag', lag)" style="">
+                <td>{{ group_lag.group }} <i class="fa fa-search" ng-click="filterByGroup(group_lag.group)"></i></td>
+                <td>{{ group_lag.topic }}</td>
+                <td>{{ group_lag.partition }}</td>
+                <td>{{ group_lag.lag }}</td>
+                <td>{{ group_lag.diff | timeFilter}}</td>
+
+            </tr>
+        </table>
+    </div>
+
+    <h5>{{ message }}</h5>
+</div>

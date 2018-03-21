@@ -6,7 +6,10 @@ public class Topic {
 
     TopicConf conf;
     TopicMetadata metadata;
-    TopicAcls acls;
+    KAcls acls;
+
+    int numberOfPartitions;
+    int replicationFactor;
 
     public Topic() {
     }
@@ -33,14 +36,25 @@ public class Topic {
     }
 
     public void setMetadata(TopicMetadata metadata) {
+
         this.metadata = metadata;
+        this.numberOfPartitions = this.metadata.getPartitions().size();
+        this.replicationFactor = this.metadata.getPartitions().get(this.metadata.getPartitions().keySet().toArray()[0]).size();
     }
 
-    public TopicAcls getAcls() {
+    public KAcls getAcls() {
         return acls;
     }
 
-    public void setAcls(TopicAcls acls) {
+    public void setAcls(KAcls acls) {
         this.acls = acls;
+    }
+
+    public int getNumberOfPartitions() {
+        return numberOfPartitions;
+    }
+
+    public int getReplicationFactor() {
+        return replicationFactor;
     }
 }

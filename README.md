@@ -6,6 +6,11 @@ How to start the Kafka Monitoring Center application
 1. Run `mvn clean install` to build your application
 2. Start application with `java -jar target/kafka-monitofing-tool-*.jar server bin/conf.yml`
 3. To check that your application is running enter url `http://localhost:9090/api/test`
+4. Start the graphical interface
+``
+$cd ng-http; python -m SimpleHTTPServer 8000
+``
+
 
 Health Check
 ---
@@ -17,7 +22,7 @@ JVM Performance Options
 ---
 
 ``
--server -XX:+UseG1GC -XX:MetaspaceSize=96m -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80 -XX:+ExplicitGCInvokesConcurrent -Djava.awt.headless=true"
+-server -XX:+UseG1GC -XX:MetaspaceSize=96m -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80 -XX:+ExplicitGCInvokesConcurrent -Djava.awt.headless=true
 ``
 
 
@@ -33,10 +38,13 @@ API
     #Topics Info
     GET     /api/topics
     GET     /api/topic/{topic}
+    GET     /api/topics/offsets
     #Consumer Groups Info
     GET     /api/groups
+    GET     /api/groups/acls
     GET     /api/groups/lag
     GET     /api/groups/lag/{min}
+    GET     /api/prometheus/groups/lag
     GET     /api/prometheus/groups/lag/{min}    
 
 

@@ -2,13 +2,15 @@ package com.gdev.core.kafka;
 
 import com.gdev.client.Zookeeper;
 import com.gdev.core.cache.*;
+import com.gdev.core.cache.model.DataPoint;
+import com.gdev.core.cache.model.LagDataPoint;
 import com.gdev.utils.ZkUtils;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
+import org.ehcache.Cache;
 import java.util.*;
 
 public class KafkaTopicOffsetThread implements Runnable {
@@ -38,22 +40,22 @@ public class KafkaTopicOffsetThread implements Runnable {
         this.consumer = new KafkaConsumer<>(properties_);
         this.refreshSeconds = refreshSeconds_;
         this.zkUtil = Zookeeper.getZkUtils(zookeeperUrl_);
-
         this.cacheTopics = TopicOffsetsCache.getInstance();
         this.cacheConsumers = ConsumersOffsetsCache.getInstance();
         this.lagCache = LagCache.getInstance();
-
         LOGGER.info(Thread.currentThread().getName()+" start Kafka  Topic offset thread");
-
 
     }
 
     @Override
     public void run() {
         while (true) {
-            updateCache(consumer, cacheTopics);
-            lag();
+
             try {
+
+                updateCache(consumer, cacheTopics);
+                lag();
+
                 // thread to sleep for 1000 milliseconds
                 LOGGER.info(String.format("sleep %ds ...",this.refreshSeconds));
                 Thread.sleep(this.refreshSeconds*1000);
@@ -81,12 +83,16 @@ public class KafkaTopicOffsetThread implements Runnable {
                 partitions.add(actualTopicPartition);
             });
 
-            Map<TopicPartition, Long> offsets = consumer.endOffsets(partitions);
-            timestamp = System.currentTimeMillis();
-            partitions.forEach(partition -> {
-                cache.put(topic_name+"-"+partition.partition(),offsets.get(partition) );
-                //LOGGER.info("TOPIC: "+topic_name+" partition: "+partition.partition()+" offset: "+offsets.get(partition) );
-            });
+            try{
+                Map<TopicPartition, Long> offsets = consumer.endOffsets(partitions);
+                timestamp = System.currentTimeMillis();
+                partitions.forEach(partition -> {
+                    cache.put(topic_name+"="+partition.partition(),offsets.get(partition) );
+                    //LOGGER.info("TOPIC: "+topic_name+" partition: "+partition.partition()+" offset: "+offsets.get(partition) );
+                });
+            }catch (Exception e){
+                LOGGER.error(e.getMessage(),e);
+            }
 
         });
     }
@@ -100,14 +106,15 @@ public class KafkaTopicOffsetThread implements Runnable {
             String consumerCacheKey = consumerCache.getKey();
             String topicPartition = consumerCacheKey.split("#")[1];
 
+            //LOGGER.info("*** "+ consumerCache.getValue().getOffset());
 
             Long lag = (Long)cacheTopics.get(topicPartition) - (consumerCache.getValue()).getOffset() ;
 
             if(lag < 0)
                 lag = 0L;
             LagDataPoint lagDataPoint = new LagDataPoint(consumerCacheKey.split("#")[0],
-                    topicPartition.split("-")[0],
-                    topicPartition.split("-")[1], lag,
+                    topicPartition.split("=")[0],
+                    topicPartition.split("=")[1], lag,
                     (timestamp - (consumerCache.getValue()).getTimestamp())/1000) ;
 
             if(LOGGER.isDebugEnabled()){
