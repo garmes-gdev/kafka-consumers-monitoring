@@ -2,7 +2,7 @@ zookeeperUrls: localhost:2181
 kafkaBrokersList: localhost:9092
 commonZkRoot: /
 refreshSeconds: 30
-jaasConf: /root/jaas.conf
+jaasConf: org.apache.kafka.common.security.plain.PlainLoginModule required username="alice" password="alice-secret";
 kerberos: false
 
 
@@ -12,3 +12,12 @@ server:
      port: 9090
      maxRequestHeaderSize: 32KiB
      maxResponseHeaderSize: 32KiB
+
+logging:
+  level: INFO
+  appenders:
+    - type: file
+      currentLogFilename: logs/kafka-monitoring.log
+      archive: true
+      archivedLogFilenamePattern: logs/kafka-monitoring.log-%d.log.gz
+      archivedFileCount: 5

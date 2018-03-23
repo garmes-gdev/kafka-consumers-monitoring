@@ -62,4 +62,8 @@ fabric.properties
 *.ctxt
 *.txt
 
+target
+logs/*
+
 bin/confVms.yml
+ng-http/clusters.json
