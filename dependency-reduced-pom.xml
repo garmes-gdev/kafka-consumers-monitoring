@@ -84,6 +84,21 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptor>src/assembly/bin.xml</descriptor>
+          <finalName>${artifactId}-${pom.version}</finalName>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencyManagement>

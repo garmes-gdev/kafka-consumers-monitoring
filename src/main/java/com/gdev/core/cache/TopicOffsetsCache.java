@@ -17,7 +17,7 @@ public class TopicOffsetsCache {
         if (cache == null)
         {
             cache =  EhCacheManager.getInstance().createCache("TopicOffsetCache",  CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Long.class,
-                    ResourcePoolsBuilder.heap(10).offheap(200, MemoryUnit.MB)
+                    ResourcePoolsBuilder.newResourcePoolsBuilder().heap(200, MemoryUnit.MB).offheap(300, MemoryUnit.MB)
                     ).withExpiry(Expirations.timeToLiveExpiration(Duration.of(1, TimeUnit.HOURS)))
             );
         }

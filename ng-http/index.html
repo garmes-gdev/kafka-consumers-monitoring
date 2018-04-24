@@ -21,7 +21,7 @@
 
 
 
-<div class="col-sm-2 menu">
+<div  ng-controller="menu_controller" class="col-sm-2 menu">
 
     <div class="cluster-id">
         <label class=""> CLUSTER ID : {{ clusterId }}</label>
@@ -31,7 +31,10 @@
         <div class="navbar-collapse collapse sidebar-navbar-collapse  no-padding">
             <ul class="nav navbar-nav">
                 <li active-link="current" href="#/" class="">
-                    <a href="#/"  role="button">STATUS</a>
+                    <a href="#/"  role="button">CLUSTERS</a>
+                </li>
+                <li active-link="current" href="#/cluster" class="">
+                    <a href="#/cluster"  role="button">STATUS</a>
                 </li>
                 <li active-link="current" href="#/brokers">
                     <a href="#/brokers" class=" " role="button">BROKERS</a>

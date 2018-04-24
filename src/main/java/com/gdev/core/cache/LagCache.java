@@ -11,6 +11,10 @@ import org.ehcache.expiry.Expirations;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * String
+ * LagDataPoint
+ */
 public class LagCache {
 
     private static Cache cache = null;
@@ -19,7 +23,7 @@ public class LagCache {
         if (cache == null)
         {
             cache =  EhCacheManager.getInstance().createCache("lagCache",  CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, LagDataPoint.class,
-                    ResourcePoolsBuilder.heap(10).offheap(500, MemoryUnit.MB)
+                    ResourcePoolsBuilder.newResourcePoolsBuilder().heap(200, MemoryUnit.MB).offheap(400, MemoryUnit.MB)
                     ).withExpiry(Expirations.timeToLiveExpiration(Duration.of(12, TimeUnit.HOURS)))
             );
         }

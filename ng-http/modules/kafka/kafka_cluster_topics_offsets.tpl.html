@@ -1,6 +1,6 @@
 <div class="col-sm-12 ">
 
-    <div class="col-sm-12" style="margin-bottom: 20px">
+    <div class="col-sm-12 search-container">
         <label> Number : {{ res.number }}</label><input type="text" ng-model="topic_name_filter" class="search" placeholder="Search..">
     </div>
     <div class="col-sm-8 col-md-4" >
@@ -8,13 +8,15 @@
         <table class="table">
             <thead>
             <tr >
+                <td></td>
                 <td>Topic</td>
                 <td>Partition</td>
                 <td>Offsets</td>
             </tr>
             </thead>
             <tr ng-repeat="tpo in res.data | filter:topic_name_filter " style="">
-                <td><i class="fa fa-search" ng-click="filterByTopic(tpo.topic)"></i> {{ tpo.topic }} </td>
+                <td><i class="fa fa-search" ng-click="filterByTopic(tpo.topic)"></i></td>
+                <td>{{ tpo.topic }} </td>
                 <td>{{ tpo.partition }}</td>
                 <td>{{ tpo.offset }}</td>
             </tr>

@@ -1,6 +1,5 @@
 package com.gdev.core.cache;
 
-
 import com.gdev.core.cache.model.DataPoint;
 import org.ehcache.Cache;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -11,6 +10,12 @@ import org.ehcache.expiry.Expirations;
 
 import java.util.concurrent.TimeUnit;
 
+
+/**
+ * String
+ * DataPoint
+ *
+ */
 public class ConsumersOffsetsCache {
 
     private static Cache cache = null;
@@ -19,8 +24,9 @@ public class ConsumersOffsetsCache {
         if (cache == null)
         {
             cache =  EhCacheManager.getInstance().createCache("consumerOffsetsCache",  CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, DataPoint.class,
-                    ResourcePoolsBuilder.heap(10).offheap(200, MemoryUnit.MB)
-                    ).withExpiry(Expirations.timeToLiveExpiration(Duration.of(12, TimeUnit.HOURS)))
+                    ResourcePoolsBuilder.newResourcePoolsBuilder().heap(300, MemoryUnit.MB)
+                            //.offheap(300, MemoryUnit.MB)
+                    ).withExpiry(Expirations.timeToLiveExpiration(Duration.of(4, TimeUnit.HOURS)))
             );
         }
         return cache;

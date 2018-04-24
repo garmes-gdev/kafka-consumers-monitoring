@@ -54,6 +54,33 @@ public class GroupResource {
         return groupListResponse;
     }
 
+    @Path("/group/remove/{group}")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String remove(@PathParam("group") String group) {
+
+        int count = 0;
+        Iterator it = cacheConsumers.iterator();
+        while(it.hasNext()) {
+            Cache.Entry<String, Long> obj = (Cache.Entry<String, Long>)it.next();
+            if(obj.getKey().contains(group)){
+                cacheConsumers.remove(obj.getKey());
+                count++;
+            }
+        }
+
+        Iterator it_ = lagCache.iterator();
+        while(it_.hasNext()) {
+            Cache.Entry<String, Long> obj = (Cache.Entry<String, Long>)it_.next();
+            if(obj.getKey().contains(group)){
+                lagCache.remove(obj.getKey());
+                count++;
+            }
+        }
+
+        return "cleaned: "+count;
+    }
+
     @Path("/groups/lag")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 if [ -z "$JAVA_HOME" ]; then
   JAVA="java"
 else
@@ -15,8 +14,10 @@ JVM_PERFORMANCE_OPTS="-server -XX:+UseG1GC -XX:MetaspaceSize=96m -XX:MaxGCPauseM
 
 JVM_PERFORMANCE_OPTS="$JVM_PERFORMANCE_OPTS -XX:MaxDirectMemorySize=1G "
 
-JAVA_HEAP_OPTS="-Xmx1G -Xms1G"
+JAVA_HEAP_OPTS="-Xms1G -Xmx1G"
 
+
+base_dir=$(dirname $0)/..
 
 getPID()
 {
@@ -26,7 +27,7 @@ getPID()
 
 start() {
   echo -n "Starting :"
-  exec nohup $JAVA  $JAVA_HEAP_OPTS $JVM_PERFORMANCE_OPTS $JMX_OPTS -jar kafka-monitoring-center-*.jar server conf.yml > kafka_monitoring.log 2>&1 < /dev/null &
+  exec nohup $JAVA  $JAVA_HEAP_OPTS $JVM_PERFORMANCE_OPTS $JMX_OPTS -jar "$base_dir"/libs/kafka-monitoring-center-*.jar server "$base_dir"/conf/conf.yml > kafka_monitoring.log 2>&1 < /dev/null &
   echo " done."
 }
 

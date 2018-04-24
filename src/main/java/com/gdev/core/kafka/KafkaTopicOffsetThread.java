@@ -100,7 +100,9 @@ public class KafkaTopicOffsetThread implements Runnable {
 
     private void lag(){
 
+
         Iterator it = cacheConsumers.iterator();
+
         while(it.hasNext()) {
             Cache.Entry<String, DataPoint> consumerCache = (Cache.Entry<String, DataPoint>)it.next();
             String consumerCacheKey = consumerCache.getKey();
@@ -108,7 +110,8 @@ public class KafkaTopicOffsetThread implements Runnable {
 
             //LOGGER.info("*** "+ consumerCache.getValue().getOffset());
 
-            Long lag = (Long)cacheTopics.get(topicPartition) - (consumerCache.getValue()).getOffset() ;
+            Long topicOffset = (Long)cacheTopics.get(topicPartition);
+            Long lag =  topicOffset - (consumerCache.getValue()).getOffset() ;
 
             if(lag < 0)
                 lag = 0L;

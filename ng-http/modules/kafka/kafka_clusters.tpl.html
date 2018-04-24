@@ -1,0 +1,32 @@
+<div class="col-sm-12 ">
+
+    <div class="col-sm-12  search-container">
+        <label> Number : {{ res.number }}</label><input type="text" ng-model="searchText" class="search" placeholder="Search..">
+    </div>
+    <div class="col-sm-6 col-md-3" >
+        <table class="table clusters-table ">
+            <thead>
+            <tr>
+                <th>Environment</th>
+                <th>Cluster ID</th>
+            </tr>
+            </thead>
+            <tr ng-repeat="cluster in clusters | filter:searchText">
+                <td><label>{{ cluster.env }}</label></td>
+                <td><label><a href  ng-click="to(cluster.name, cluster.api_url )"> {{ cluster.name }} </a></label></td>
+                <td class="hide">{{ cluster.api_url }} </a></td>
+
+            </tr>
+
+        </table>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
