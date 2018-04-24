@@ -3,13 +3,15 @@
 How to start the Kafka Monitoring Center application
 ---
 
-1. Run `mvn clean install` to build your application
-2. Start application with `java -jar target/kafka-monitofing-tool-*.jar server bin/conf.yml`
-3. To check that your application is running enter url `http://localhost:9090/api/test`
-4. Start the graphical interface
-``
-$cd ng-http; python -m SimpleHTTPServer 8000
-``
+1. Run `mvn clean package` to build your application
+2. move the tar/zip
+3. Unzip `tar -xvf kafka-monitoring-center-{version}-distribution.tar.gz`
+4. start the application `./bin/kafka-monitoring.sh start`
+4. To check that your application is running enter url `http://localhost:9090/api/test`
+
+start the the graphical interface
+---
+1. ``$cd ng-http; python -m SimpleHTTPServer 8000 ``
 
 
 Health Check

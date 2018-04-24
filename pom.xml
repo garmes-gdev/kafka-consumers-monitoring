@@ -10,7 +10,7 @@
     </prerequisites>
 
     <groupId>com.gdev</groupId>
-    <artifactId>kafka-monitofing-center</artifactId>
+    <artifactId>kafka-monitoring-center</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
@@ -38,6 +38,7 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>com.101tec</groupId>
@@ -188,6 +189,25 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptor>src/assembly/bin.xml</descriptor>
+                    <finalName>${artifactId}-${pom.version}</finalName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
