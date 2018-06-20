@@ -1,8 +1,11 @@
 package com.gdev.core.kafka;
 
 import com.gdev.core.cache.ConsumersOffsetsCache;
+import com.gdev.core.cache.GroupMetadataCache;
 import com.gdev.core.cache.model.DataPoint;
 import com.gdev.core.cache.TopicOffsetsCache;
+import com.gdev.core.cache.model.GroupMemberMetadata;
+import com.gdev.core.cache.model.GroupMetadata;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -120,26 +123,25 @@ public class KafkaNewConsumerOffsetThread implements Runnable {
 
 
     private KafkaConsumer<byte[], byte[]> consumer ;
-    private Cache cache;
-
-    private Cache cacheTopiccs;
+    private Cache consumerOffsetCache;
+    private Cache groupMetadataCache;
 
     public  KafkaNewConsumerOffsetThread(Properties properties){
         consumer = new KafkaConsumer<>(properties);
         consumer.subscribe(Arrays.asList("__consumer_offsets"));
         LOGGER.info(Thread.currentThread().getName()+" start Kafka consumer  offset topic");
-        cache = ConsumersOffsetsCache.getInstance();
-        cacheTopiccs = TopicOffsetsCache.getInstance();
+        consumerOffsetCache = ConsumersOffsetsCache.getInstance();
+        this.groupMetadataCache = GroupMetadataCache.getInstance();
     }
 
     @Override
     public void run() {
         while (true) {
-            getOffsets(consumer, cache);
+            getOffsets(consumer, consumerOffsetCache, groupMetadataCache);
         }
     }
 
-    private  void getOffsets(KafkaConsumer<byte[], byte[]> consumer, Cache cache){
+    private  void getOffsets(KafkaConsumer<byte[], byte[]> consumer, Cache cache, Cache groupCache){
         ConsumerRecords<byte[], byte[]> records = consumer.poll(10000);
         for (ConsumerRecord<byte[], byte[]> consumerRecord : records) {
             if (consumerRecord.value() != null && consumerRecord.key() != null) {
@@ -158,6 +160,7 @@ public class KafkaNewConsumerOffsetThread implements Runnable {
                     Struct struct = (Struct) GROUP_METADATA_KEY_SCHEMA.read(key);
                     String group = struct.getString("group");
                     LOGGER.debug("["+group+"] Group Info");
+                    groupCache.put(group,readGroupMessageValue(ByteBuffer.wrap(consumerRecord.value()), group));
                 } else{
                     throw new IllegalStateException("Unknown version " + version + " for group metadata message");
                 }
@@ -193,6 +196,47 @@ public class KafkaNewConsumerOffsetThread implements Runnable {
         if (version == (short) 1)
             return OFFSET_COMMIT_VALUE_SCHEMA_V1;
         throw new IllegalStateException("Unknown offset schema version " + version);
+    }
+
+
+
+    private GroupMetadata readGroupMessageValue(ByteBuffer buffer, String group){
+        if (buffer == null) { // tombstone
+            return  null;
+        } else {
+            short version = buffer.getShort();
+            Schema valueSchema = schemaForGroup(version);
+            Struct value = valueSchema.read(buffer);
+            if (version == 0 || version == 1 ) {
+                String protocolType = value.getString(PROTOCOL_TYPE_KEY);
+                Integer generationId = value.getInt(GENERATION_KEY);
+                String leaderId = value.getString(LEADER_KEY);
+                String protocol = value.getString(PROTOCOL_KEY);
+
+                GroupMetadata groupMetadata = new GroupMetadata(protocolType,generationId,leaderId,protocol);
+
+                Object[] memberMetadataArray = value.getArray(MEMBERS_KEY);
+                for(int i=0; i < memberMetadataArray.length;i++){
+
+                    Struct memberMetadata = (Struct)memberMetadataArray[i];
+                    String memberId = memberMetadata.getString(MEMBER_ID_KEY);
+                    String clientId = memberMetadata.getString(CLIENT_ID_KEY);
+                    String clientHost = memberMetadata.getString(CLIENT_HOST_KEY);
+                    Integer sessionTimeout = memberMetadata.getInt(SESSION_TIMEOUT_KEY);
+                    Integer rebalanceTimeout = 0;
+                    if (version == 0) rebalanceTimeout = sessionTimeout ;
+                    else memberMetadata.getInt(REBALANCE_TIMEOUT_KEY);
+                    groupMetadata.addMemberMetadata(new GroupMemberMetadata(memberId,clientId,clientHost,sessionTimeout,rebalanceTimeout));
+                    // subscription = Utils.toArray(memberMetadata.get(SUBSCRIPTION_KEY).asInstanceOf[ByteBuffer])
+                    //member.assignment = Utils.toArray(memberMetadata.get(ASSIGNMENT_KEY).asInstanceOf[ByteBuffer])
+
+                }
+
+                return groupMetadata;
+            } else {
+                throw new IllegalStateException("Unknown offset message version");
+            }
+        }
     }
     private Schema schemaForGroup(short version) {
         if (version == (short) 0)

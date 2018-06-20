@@ -113,8 +113,8 @@ public class KafkaTopicOffsetThread implements Runnable {
             Long topicOffset = (Long)cacheTopics.get(topicPartition);
             Long lag =  topicOffset - (consumerCache.getValue()).getOffset() ;
 
-            if(lag < 0)
-                lag = 0L;
+           /* if(lag < 0)
+                lag = 0L;*/
             LagDataPoint lagDataPoint = new LagDataPoint(consumerCacheKey.split("#")[0],
                     topicPartition.split("=")[0],
                     topicPartition.split("=")[1], lag,

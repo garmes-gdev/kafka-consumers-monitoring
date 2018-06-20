@@ -61,7 +61,8 @@ public class KafkaMonitoringCenter extends Application<KafkaMonitoringCenterConf
         ConsumerProps.put("key.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         ConsumerProps.put("value.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         ConsumerProps.put("enable.auto.commit", "false");
-        ConsumerProps.put("auto.offset.reset", "latest");
+        ConsumerProps.put("auto.offset.reset", "earliest");//latest
+        //props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         environment.jersey().setUrlPattern("/api/*");
 

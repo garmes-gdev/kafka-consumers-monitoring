@@ -1,6 +1,7 @@
 package com.gdev.core.kafka;
 
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Properties;
@@ -18,6 +19,7 @@ public class Main {
         props.put("group.id", "kafka_monitor");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
+        //props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put("enable.auto.commit", "false");
         props.put("auto.offset.reset", "latest");
 

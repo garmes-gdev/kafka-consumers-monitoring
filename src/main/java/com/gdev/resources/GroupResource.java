@@ -3,9 +3,12 @@ package com.gdev.resources;
 import com.gdev.api.GroupLagResponse;
 import com.gdev.api.GroupListAclsResponse;
 import com.gdev.api.GroupListResponse;
+import com.gdev.api.GroupMetadataResponse;
 import com.gdev.client.Zookeeper;
 import com.gdev.core.cache.ConsumersOffsetsCache;
+import com.gdev.core.cache.GroupMetadataCache;
 import com.gdev.core.cache.LagCache;
+import com.gdev.core.cache.model.GroupMetadata;
 import com.gdev.core.cache.model.LagDataPoint;
 import com.gdev.db.zookeeper.ZkDataConverter;
 import com.gdev.utils.Prometheus;
@@ -29,10 +32,12 @@ public class GroupResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupLagResponse.class);
 
     private Cache cacheConsumers;
+    private Cache cacheGroups;
     private Cache lagCache;
     private ZkUtils zookeeper;
     public GroupResource() {
         this.cacheConsumers = ConsumersOffsetsCache.getInstance();
+        this.cacheGroups = GroupMetadataCache.getInstance();
         this.lagCache = LagCache.getInstance();
         this.zookeeper = Zookeeper.getZkUtils("");
     }
@@ -53,6 +58,24 @@ public class GroupResource {
         GroupListResponse groupListResponse = new GroupListResponse(groups);
         return groupListResponse;
     }
+
+    @Path("/groups/{group}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public GroupMetadataResponse getGroupsMetadataResponse(@PathParam("group") String group) {
+
+        GroupMetadata groupMetadata = (GroupMetadata) this.cacheGroups.get(group);
+
+        GroupMetadataResponse groupMetadataResponse = new GroupMetadataResponse(groupMetadata);
+        if(groupMetadata == null)
+        {
+            groupMetadataResponse.setError(404);
+            groupMetadataResponse.setMessage("Group not found!!");
+        }
+
+        return groupMetadataResponse;
+    }
+
 
     @Path("/group/remove/{group}")
     @GET
@@ -179,5 +202,8 @@ public class GroupResource {
 
         return response;
     }
+
+
+
     
 }
