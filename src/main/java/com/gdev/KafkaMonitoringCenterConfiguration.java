@@ -1,11 +1,9 @@
 package com.gdev;
 
-import io.dropwizard.Configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.*;
+import io.dropwizard.Configuration;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 public class KafkaMonitoringCenterConfiguration extends Configuration {
 
@@ -42,6 +40,9 @@ public class KafkaMonitoringCenterConfiguration extends Configuration {
 
     @Valid
     private int jmxPort = 9999;
+
+    @Valid
+    private String metricsTopic = "";
 
     public String getZookeeperUrls() {
         return zookeeperUrls;
@@ -192,4 +193,15 @@ public class KafkaMonitoringCenterConfiguration extends Configuration {
     public void setEnableJMX(boolean enableJMX) {
         this.enableJMX = enableJMX;
     }
+
+    @JsonProperty
+    public void setMetricsTopic(String metricsTopic) {
+        this.metricsTopic = metricsTopic;
+    }
+
+    @JsonProperty
+    public String getMetricsTopic() {
+        return this.metricsTopic;
+    }
+
 }

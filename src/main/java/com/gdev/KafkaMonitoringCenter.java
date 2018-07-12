@@ -5,15 +5,19 @@ import com.gdev.core.cache.ConsumersOffsetsCache;
 import com.gdev.core.cache.TopicOffsetsCache;
 import com.gdev.core.kafka.KafkaNewConsumerOffsetThread;
 import com.gdev.core.kafka.KafkaTopicOffsetThread;
+import com.gdev.core.kafka.MonitoringMetricsThread;
 import com.gdev.health.TestHealthCheck;
-import com.gdev.resources.*;
+import com.gdev.resources.BrokerResource;
+import com.gdev.resources.ClusterResource;
+import com.gdev.resources.GroupResource;
+import com.gdev.resources.MetricsResource;
+import com.gdev.resources.TestResource;
+import com.gdev.resources.TopicResource;
 import io.dropwizard.Application;
-import io.dropwizard.servlets.CacheBustingFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
-import org.ehcache.Cache;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import java.util.EnumSet;
@@ -96,6 +100,16 @@ public class KafkaMonitoringCenter extends Application<KafkaMonitoringCenterConf
 
         Thread th = new Thread(new KafkaTopicOffsetThread(ConsumerProps,configuration.getZookeeperUrls(), configuration.getRefreshSeconds() ));
         th.start();
+
+        String metricsTopic = configuration.getMetricsTopic();
+        if (!metricsTopic.isEmpty()) {
+            final MetricsResource metricsResource = new MetricsResource();
+            environment.jersey().register(metricsResource);
+
+            Thread monitoringMetricsThread = new Thread(new MonitoringMetricsThread(ConsumerProps, metricsTopic));
+            monitoringMetricsThread.setName("monitoring-metrics");
+            monitoringMetricsThread.start();
+        }
 
     }
 
