@@ -4,7 +4,7 @@ commonZkRoot: /
 refreshSeconds: 30
 jaasConf: org.apache.kafka.common.security.plain.PlainLoginModule required username="alice" password="alice-secret";
 kerberos: false
-
+metricsTopic: _monitoring-metrics
 
 server:
   applicationConnectors:

@@ -3,11 +3,20 @@
 How to start the Kafka Monitoring Center application
 ---
 
+First clone, compile, install kafka-prometheus-metrics from: https://github.com/Ludden/kafka-prometheus-metrics
+```
+<dependency>
+    <groupId>com.ldev.kafka</groupId>
+    <artifactId>kafka-prometheus-metrics</artifactId>
+    <version>0.1-SNAPSHOT</version>
+</dependency>
+```
+
 1. Run `mvn clean package` to build your application
 2. move the tar/zip
 3. Unzip `tar -xvf kafka-monitoring-center-{version}-distribution.tar.gz`
 4. start the application `./bin/kafka-monitoring.sh start`
-4. To check that your application is running enter url `http://localhost:9090/api/test`
+5. To check that your application is running enter url `http://localhost:9090/api/test`
 
 start the the graphical interface
 ---
